@@ -1,0 +1,179 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Parkinson’s disease (PD) is a neurodegenerative disorder that affects predominately dopamine-producing neurons in a specific area of the brain called substantia nigra.
+
+Symptoms generally develop slowly over years. The progression of symptoms is often a bit different from one person to another due to the diversity of the disease. People with PD may experience:
+
+Tremor, mainly at rest and described as pill rolling tremor in hands. Other forms of tremor are possible
+Slowness of movements (bradykinesia)
+Limb rigidity
+Gait and balance problems
+Let’s come to the dataset. This dataset is from UCI Machine Learning Repository.This dataset is composed of a range of biomedical voice measurements from 31 people, 23 with Parkinson’s disease (PD). Each column in the table is a particular voice measure, and each row corresponds one of 195 voice recording from these individuals (“name” column). The main aim of the data is to discriminate healthy people from those with PD, according to “status” column which is set to 0 for healthy and 1 for PD.
+
+Our problem is to predict any individual as healthy or not.
+Parkinson’s disease (PD) is a neurodegenerative disorder that affects predominately dopamine-producing neurons in a specific area of the brain called substantia nigra.
+
+Symptoms generally develop slowly over years. The progression of symptoms is often a bit different from one person to another due to the diversity of the disease. People with PD may experience:
+
+Tremor, mainly at rest and described as pill rolling tremor in hands. Other forms of tremor are possible
+Slowness of movements (bradykinesia)
+Limb rigidity
+Gait and balance problems
+Let’s come to the dataset. This dataset is from UCI Machine Learning Repository.This dataset is composed of a range of biomedical voice measurements from 31 people, 23 with Parkinson’s disease (PD). Each column in the table is a particular voice measure, and each row corresponds one of 195 voice recording from these individuals (“name” column). The main aim of the data is to discriminate healthy people from those with PD, according to “status” column which is set to 0 for healthy and 1 for PD.
+
+Our problem is to predict any individual as healthy or not.
+```{r}
+data <- read.csv(file = 'parkinsons.data')
+
+```
+
+We have our data set called “data”. Let’s get a view and summary of the dataset.
+```{r}
+head(data,6)
+dim(data)
+na = colSums(is.na(data))
+```
+no missing values.
+
+So “status” is our variable of interest. We would like to predict the class of the ‘status’ of any individuals. It’s a classification problem. We are going to use various classification algorithm for this problem.
+# Feature scaling
+```{r}
+data[,-  c(1,18)] <- scale(data[,-c(1,18)])
+```
+#define the columns that contain your abundance data. Change the number after the ":" to subset your data
+```{r}
+com = data[,2:23]
+```
+Now create a correlation matrix with your community composition data using the command ‘cor’
+```{r}
+cc = cor(com, method = "spearman")
+
+```
+Now you have a correlation matrix that contains correlation coefficients for every pairwise combination of variables in our data and Spearman captures all types of positive or negative relationships
+Spearman correlation: is a non-parametric measure of rank correlation and assesses how well a relationship between two variables can be described using a monotonic function.
+The easiest way to visualize this correlation matrix is using the function “ggcorrplot” from the package ggcorrplot
+```{r fig.height=5, fig.width=12}
+library(ggcorrplot)
+
+ggcorrplot(cc,hc.order="TRUE")
+```
+It is clear that correlated features means that they bring the same information, so it is logical to remove one of them. When we have highly correlated features, the variance will be large.
+
+Removing the highly correlated variables
+```{r}
+  data <- subset(data, select = -c(1,5,6,8,10,11,12,14))
+
+```
+Now we have removed the highly correlated variables from the dataset. 
+
+let’s have a basic idea of each variable respect to the ‘status’ variable. We are going to plot various box-plots for each variable.
+```{r}
+attach(data)
+data.m =melt(data[,-1],id.vars = "status")
+d <- ggplot(data = data.m, aes(x=variable, y=value)) + 
+             geom_boxplot(aes(fill=status))
+d + facet_wrap( ~ variable, scales="free")
+```
+now we have some basic idea how the variables are distributed over ‘status’. Also we are getting an idea of outliers in our variable.
+
+We can see there are good numbers of outliers in “MDVP.RAP”,“Jitter.DDP” and “NHR”. And we will replace them by their median. we will create a function called outlier_replace to do that.
+```{r}
+outlier_remove=function(x){
+    quantiles <- quantile( x, c(.25, .75 ) )
+    iqr=IQR(x)
+    med=median(x)
+    x[ x < quantiles[1]-iqr ] <- med
+    x[ x > quantiles[2]+ iqr] <- med
+    x
+}
+
+```
+replacing the outliers
+```{r}
+data$MDVP.RAP= outlier_remove(data$MDVP.RAP)
+data$Jitter.DDP= outlier_remove(data$Jitter.DDP)
+data$NHR= outlier_remove(data$NHR)
+```
+
+now we age going to split our data into training and test data
+```{r}
+library(caTools)
+split=sample.split(data$status,SplitRatio = .80)
+train=subset(data,split==T)
+test=subset(data,split==F)
+```
+Model fitting
+```{r}
+library(caret)
+model.lg= glm(data=train,status~.,family = "binomial")
+summary(model.lg)
+step(model.lg,direction="backward")
+```
+ The Akaike information criterion (AIC) is an estimator of out-of-sample prediction error and thereby relative quality of statistical models for a given set of data.Lower AIC values indicate a better-fit model
+ 
+ We will select the model with lowest AIC that is
+ status ~ NHR + RPDE + spread1 + spread2
+
+
+ 
+```{r}
+final.model= glm(formula = status ~ NHR + RPDE + spread1 + spread2, family = "binomial", 
+    data = train)
+summary(final.model)
+```
+We will check our model’s accuracy now. First we will use our training data.
+
+Fitting the model
+```{r}
+train$pred<-fitted(final.model)
+```
+Predicting the train dataset
+```{r}
+pred <-prediction(train$pred,train$status)
+```
+ Create Performance Objects and plotting graph
+```{r fig.height=5, fig.width=12}
+perf<-performance(pred,"tpr","fpr")
+plot(perf,colorize = T,print.cutoffs.at = seq(0.1,by = 0.1))
+```
+With the use of ROC curve we can observe that 0.9 is having better sensitivity and specificity.There we select 0.9 as our cutoff to distinguish.
+
+
+```{r}
+pre <- as.numeric(predict(final.model,type="response")>0.9)
+```
+ 
+creating the confusion matrix
+```{r}
+confusionMatrix(table(pre,train$status))
+```
+
+Accuracy of training data
+From confusion matrix of training data, we come to know that our model is 84.34% accurate.
+
+Now validating the model on testing data
+```{r}
+pre  <- as.numeric(predict(final.model,newdata=test,type="response")>0.9)
+
+
+```
+ # type = "response" is used to get the outcome in the form of probability of having parkinson's disease.
+ As we know that, for training data the cutoff has been 0.9.Similarly the testing data will also have the same threshold or cutoff.
+ 
+ making the confusion matrix
+```{r}
+
+confusionMatrix(table(pre,test$status))
+ 
+```
+Balanced Accuracy of Testing data is 79.66%
+
+To check how much of our predicted values lie inside the curve
+```{r}
+auc<-performance(pred,"auc")
+auc@y.values
+```
+We can conclude that we are getting an accuracy of 79.66 %. Also our misclassifcation rate is 20.34%
