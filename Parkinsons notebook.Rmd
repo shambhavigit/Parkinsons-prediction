@@ -1,6 +1,15 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: '1'
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+    number_sections: no
+    toc_depth: 1
 ---
 
 Parkinson’s disease (PD) is a neurodegenerative disorder that affects predominately dopamine-producing neurons in a specific area of the brain called substantia nigra.
@@ -22,7 +31,7 @@ Tremor, mainly at rest and described as pill rolling tremor in hands. Other form
 Slowness of movements (bradykinesia)
 Limb rigidity
 Gait and balance problems
-Let’s come to the dataset. This dataset is from UCI Machine Learning Repository.This dataset is composed of a range of biomedical voice measurements from 31 people, 23 with Parkinson’s disease (PD). Each column in the table is a particular voice measure, and each row corresponds one of 195 voice recording from these individuals (“name” column). The main aim of the data is to discriminate healthy people from those with PD, according to “status” column which is set to 0 for healthy and 1 for PD.
+Let’s come to the dataset. This dataset is from UCI Machine Learning Repository.This dataset is composed of a range of biomedical voice measurements from 31 people, 23 with Parkinson’s disease (PD). Each column in the table is a particular voice measure, and each row corresponds one of 195 voice recording from these individuals (“name” column). The main aim of the data is to discriminate healthy people from those with PD, according to “status” column which is set to 0 for healthy and 1 for PD. We will be using Logistic Regression.
 
 Our problem is to predict any individual as healthy or not.
 ```{r}
@@ -152,7 +161,7 @@ confusionMatrix(table(pre,train$status))
 ```
 
 Accuracy of training data
-From confusion matrix of training data, we come to know that our model is 84.34% accurate.
+From confusion matrix of training data, we come to know that our model is 79.57% accurate.
 
 Now validating the model on testing data
 ```{r}
