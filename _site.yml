@@ -1,6 +1,10 @@
 name: "Shambhavi Thakur"
 navbar:
+  title: "Disease Predictions"
   left:
+    - text: "Home"
+      href: index.html
     - text: "Parkinsons Disease Prediction"
       href: Parkinsons-notebook.html
+      
 output_dir: "docs"
