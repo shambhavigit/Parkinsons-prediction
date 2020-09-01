@@ -354,7 +354,8 @@ $(document).ready(function () {
 <p>now we age going to split our data into training and test data</p>
 <pre class="r"><code>library(caTools)</code></pre>
 <pre><code>## Warning: package &#39;caTools&#39; was built under R version 4.0.2</code></pre>
-<pre class="r"><code>split=sample.split(data$status,SplitRatio = .80)
+<pre class="r"><code>set.seed(10)
+split=sample.split(data$status,SplitRatio = .80)
 train=subset(data,split==T)
 test=subset(data,split==F)</code></pre>
 <p>Model fitting</p>
@@ -369,269 +370,276 @@ summary(model.lg)</code></pre>
 ## 
 ## Deviance Residuals: 
 ##      Min        1Q    Median        3Q       Max  
-## -2.31437   0.00076   0.14340   0.46944   1.51033  
+## -2.39763   0.00029   0.08014   0.42576   1.89730  
 ## 
 ## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)     2.99410    0.64879   4.615 3.93e-06 ***
-## MDVP.Fo.Hz.    -0.19547    0.57553  -0.340   0.7341    
-## MDVP.Fhi.Hz.   -0.38079    0.31915  -1.193   0.2328    
-## MDVP.Flo.Hz.   -0.16669    0.41322  -0.403   0.6867    
-## MDVP.RAP      105.86528  333.98426   0.317   0.7513    
-## Jitter.DDP   -105.46509  334.08093  -0.316   0.7522    
-## Shimmer.APQ5    3.55687    2.53603   1.403   0.1608    
-## Shimmer.DDA    -1.54424    1.94399  -0.794   0.4270    
-## NHR            -0.43209    1.32366  -0.326   0.7441    
-## HNR             0.93949    0.79570   1.181   0.2377    
-## RPDE           -0.75227    0.46160  -1.630   0.1032    
-## DFA            -0.07844    0.46428  -0.169   0.8658    
-## spread1         1.72490    2.01049   0.858   0.3909    
-## spread2         0.76783    0.43263   1.775   0.0759 .  
-## D2              0.66779    0.49669   1.344   0.1788    
-## PPE             0.51963    2.13568   0.243   0.8078    
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    3.1734     0.6793   4.671 2.99e-06 ***
+## MDVP.Fo.Hz.    0.5564     0.7289   0.763    0.445    
+## MDVP.Fhi.Hz.  -0.3203     0.4997  -0.641    0.522    
+## MDVP.Flo.Hz.  -0.4648     0.4410  -1.054    0.292    
+## MDVP.RAP      65.4977   352.7336   0.186    0.853    
+## Jitter.DDP   -63.9250   352.7201  -0.181    0.856    
+## Shimmer.APQ5   1.9794     2.4656   0.803    0.422    
+## Shimmer.DDA   -0.6004     1.9398  -0.310    0.757    
+## NHR           -1.8966     1.6291  -1.164    0.244    
+## HNR            0.6631     0.8554   0.775    0.438    
+## RPDE          -0.3763     0.4799  -0.784    0.433    
+## DFA            0.2777     0.5017   0.553    0.580    
+## spread1        1.9252     2.8968   0.665    0.506    
+## spread2        0.6011     0.4736   1.269    0.204    
+## D2             0.9467     0.6058   1.563    0.118    
+## PPE            0.6101     2.9467   0.207    0.836    
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 173.217  on 155  degrees of freedom
-## Residual deviance:  88.727  on 140  degrees of freedom
-## AIC: 120.73
+## Residual deviance:  83.741  on 140  degrees of freedom
+## AIC: 115.74
 ## 
-## Number of Fisher Scoring iterations: 7</code></pre>
+## Number of Fisher Scoring iterations: 8</code></pre>
 <pre class="r"><code>step(model.lg,direction=&quot;backward&quot;)</code></pre>
-<pre><code>## Start:  AIC=120.73
+<pre><code>## Start:  AIC=115.74
 ## status ~ MDVP.Fo.Hz. + MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + 
 ##     Jitter.DDP + Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + 
 ##     DFA + spread1 + spread2 + D2 + PPE
 ## 
 ##                Df Deviance    AIC
-## - DFA           1   88.756 118.76
-## - PPE           1   88.784 118.78
-## - Jitter.DDP    1   88.827 118.83
-## - MDVP.RAP      1   88.828 118.83
-## - NHR           1   88.836 118.84
-## - MDVP.Fo.Hz.   1   88.843 118.84
-## - MDVP.Flo.Hz.  1   88.891 118.89
-## - Shimmer.DDA   1   89.336 119.34
-## - spread1       1   89.696 119.70
-## - HNR           1   90.145 120.14
-## - MDVP.Fhi.Hz.  1   90.181 120.18
-## - D2            1   90.647 120.65
-## &lt;none&gt;              88.727 120.73
-## - Shimmer.APQ5  1   90.799 120.80
-## - RPDE          1   91.518 121.52
-## - spread2       1   92.048 122.05
+## - Jitter.DDP    1   83.774 113.77
+## - MDVP.RAP      1   83.776 113.78
+## - PPE           1   83.783 113.78
+## - Shimmer.DDA   1   83.834 113.83
+## - DFA           1   84.051 114.05
+## - MDVP.Fhi.Hz.  1   84.183 114.18
+## - spread1       1   84.285 114.28
+## - MDVP.Fo.Hz.   1   84.342 114.34
+## - RPDE          1   84.364 114.36
+## - HNR           1   84.366 114.37
+## - Shimmer.APQ5  1   84.399 114.40
+## - MDVP.Flo.Hz.  1   84.848 114.85
+## - NHR           1   85.126 115.13
+## - spread2       1   85.377 115.38
+## &lt;none&gt;              83.741 115.74
+## - D2            1   86.503 116.50
 ## 
-## Step:  AIC=118.76
+## Step:  AIC=113.77
 ## status ~ MDVP.Fo.Hz. + MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + 
-##     Jitter.DDP + Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + 
-##     spread1 + spread2 + D2 + PPE
+##     Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + DFA + spread1 + 
+##     spread2 + D2 + PPE
 ## 
 ##                Df Deviance    AIC
-## - PPE           1   88.809 116.81
-## - NHR           1   88.837 116.84
-## - MDVP.Fo.Hz.   1   88.843 116.84
-## - Jitter.DDP    1   88.849 116.85
-## - MDVP.RAP      1   88.849 116.85
-## - MDVP.Flo.Hz.  1   88.962 116.96
-## - Shimmer.DDA   1   89.376 117.38
-## - spread1       1   89.827 117.83
-## - HNR           1   90.172 118.17
-## - MDVP.Fhi.Hz.  1   90.183 118.18
-## &lt;none&gt;              88.756 118.76
-## - D2            1   90.807 118.81
-## - Shimmer.APQ5  1   90.809 118.81
-## - RPDE          1   91.642 119.64
-## - spread2       1   92.157 120.16
+## - PPE           1   83.815 111.81
+## - Shimmer.DDA   1   83.858 111.86
+## - DFA           1   84.104 112.10
+## - MDVP.Fhi.Hz.  1   84.194 112.19
+## - spread1       1   84.324 112.32
+## - RPDE          1   84.364 112.36
+## - MDVP.Fo.Hz.   1   84.393 112.39
+## - Shimmer.APQ5  1   84.422 112.42
+## - HNR           1   84.453 112.45
+## - MDVP.RAP      1   84.701 112.70
+## - MDVP.Flo.Hz.  1   84.854 112.85
+## - NHR           1   85.136 113.14
+## - spread2       1   85.443 113.44
+## &lt;none&gt;              83.774 113.77
+## - D2            1   86.514 114.51
 ## 
-## Step:  AIC=116.81
+## Step:  AIC=111.81
 ## status ~ MDVP.Fo.Hz. + MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + 
-##     Jitter.DDP + Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + 
-##     spread1 + spread2 + D2
-## 
-##                Df Deviance    AIC
-## - MDVP.Fo.Hz.   1   88.887 114.89
-## - NHR           1   88.894 114.89
-## - Jitter.DDP    1   88.895 114.89
-## - MDVP.RAP      1   88.896 114.90
-## - MDVP.Flo.Hz.  1   89.028 115.03
-## - Shimmer.DDA   1   89.537 115.54
-## - HNR           1   90.226 116.23
-## - MDVP.Fhi.Hz.  1   90.370 116.37
-## &lt;none&gt;              88.809 116.81
-## - D2            1   90.837 116.84
-## - Shimmer.APQ5  1   91.104 117.10
-## - RPDE          1   91.664 117.66
-## - spread2       1   92.158 118.16
-## - spread1       1   97.461 123.46
-## 
-## Step:  AIC=114.89
-## status ~ MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + Jitter.DDP + 
-##     Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + spread1 + 
+##     Shimmer.APQ5 + Shimmer.DDA + NHR + HNR + RPDE + DFA + spread1 + 
 ##     spread2 + D2
 ## 
 ##                Df Deviance    AIC
-## - NHR           1   88.949 112.95
-## - Jitter.DDP    1   88.960 112.96
-## - MDVP.RAP      1   88.961 112.96
-## - MDVP.Flo.Hz.  1   89.375 113.38
-## - Shimmer.DDA   1   89.563 113.56
-## - HNR           1   90.721 114.72
-## - MDVP.Fhi.Hz.  1   90.829 114.83
-## - D2            1   90.838 114.84
-## &lt;none&gt;              88.887 114.89
-## - Shimmer.APQ5  1   91.111 115.11
-## - RPDE          1   91.666 115.67
-## - spread2       1   92.363 116.36
-## - spread1       1  100.573 124.57
+## - Shimmer.DDA   1   83.944 109.94
+## - DFA           1   84.149 110.15
+## - MDVP.Fhi.Hz.  1   84.277 110.28
+## - RPDE          1   84.383 110.38
+## - MDVP.Fo.Hz.   1   84.482 110.48
+## - HNR           1   84.520 110.52
+## - Shimmer.APQ5  1   84.587 110.59
+## - MDVP.RAP      1   84.793 110.79
+## - MDVP.Flo.Hz.  1   84.868 110.87
+## - NHR           1   85.139 111.14
+## - spread2       1   85.455 111.45
+## &lt;none&gt;              83.815 111.81
+## - D2            1   86.514 112.51
+## - spread1       1   91.343 117.34
 ## 
-## Step:  AIC=112.95
-## status ~ MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + Jitter.DDP + 
-##     Shimmer.APQ5 + Shimmer.DDA + HNR + RPDE + spread1 + spread2 + 
+## Step:  AIC=109.94
+## status ~ MDVP.Fo.Hz. + MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + 
+##     Shimmer.APQ5 + NHR + HNR + RPDE + DFA + spread1 + spread2 + 
 ##     D2
 ## 
 ##                Df Deviance    AIC
-## - Jitter.DDP    1   89.031 111.03
-## - MDVP.RAP      1   89.031 111.03
-## - MDVP.Flo.Hz.  1   89.377 111.38
-## - Shimmer.DDA   1   89.589 111.59
-## - D2            1   90.899 112.90
-## &lt;none&gt;              88.949 112.95
-## - MDVP.Fhi.Hz.  1   90.954 112.95
-## - Shimmer.APQ5  1   91.130 113.13
-## - HNR           1   91.168 113.17
-## - RPDE          1   91.769 113.77
-## - spread2       1   92.376 114.38
-## - spread1       1  103.852 125.85
+## - DFA           1   84.322 108.32
+## - MDVP.Fhi.Hz.  1   84.348 108.35
+## - RPDE          1   84.527 108.53
+## - HNR           1   84.653 108.65
+## - MDVP.Fo.Hz.   1   84.685 108.69
+## - MDVP.RAP      1   84.798 108.80
+## - MDVP.Flo.Hz.  1   85.002 109.00
+## - NHR           1   85.166 109.17
+## - spread2       1   85.460 109.46
+## &lt;none&gt;              83.944 109.94
+## - Shimmer.APQ5  1   86.598 110.60
+## - D2            1   86.659 110.66
+## - spread1       1   92.972 116.97
 ## 
-## Step:  AIC=111.03
+## Step:  AIC=108.32
+## status ~ MDVP.Fo.Hz. + MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + 
+##     Shimmer.APQ5 + NHR + HNR + RPDE + spread1 + spread2 + D2
+## 
+##                Df Deviance    AIC
+## - MDVP.Fo.Hz.   1   84.754 106.75
+## - MDVP.Fhi.Hz.  1   84.903 106.90
+## - HNR           1   84.979 106.98
+## - RPDE          1   85.278 107.28
+## - MDVP.Flo.Hz.  1   85.281 107.28
+## - MDVP.RAP      1   86.089 108.09
+## &lt;none&gt;              84.322 108.32
+## - spread2       1   86.396 108.40
+## - NHR           1   86.648 108.65
+## - D2            1   86.946 108.95
+## - Shimmer.APQ5  1   87.184 109.18
+## - spread1       1   93.010 115.01
+## 
+## Step:  AIC=106.75
 ## status ~ MDVP.Fhi.Hz. + MDVP.Flo.Hz. + MDVP.RAP + Shimmer.APQ5 + 
-##     Shimmer.DDA + HNR + RPDE + spread1 + spread2 + D2
+##     NHR + HNR + RPDE + spread1 + spread2 + D2
 ## 
 ##                Df Deviance    AIC
-## - MDVP.RAP      1   89.041 109.04
-## - MDVP.Flo.Hz.  1   89.468 109.47
-## - Shimmer.DDA   1   89.703 109.70
-## - MDVP.Fhi.Hz.  1   91.023 111.02
-## &lt;none&gt;              89.031 111.03
-## - D2            1   91.065 111.06
-## - Shimmer.APQ5  1   91.335 111.33
-## - HNR           1   91.477 111.48
-## - RPDE          1   91.800 111.80
-## - spread2       1   92.517 112.52
-## - spread1       1  104.168 124.17
+## - MDVP.Fhi.Hz.  1   85.052 105.05
+## - HNR           1   85.107 105.11
+## - MDVP.Flo.Hz.  1   85.301 105.30
+## - RPDE          1   85.981 105.98
+## - spread2       1   86.568 106.57
+## &lt;none&gt;              84.754 106.75
+## - MDVP.RAP      1   86.900 106.90
+## - Shimmer.APQ5  1   87.436 107.44
+## - NHR           1   87.541 107.54
+## - D2            1   87.908 107.91
+## - spread1       1   93.711 113.71
 ## 
-## Step:  AIC=109.04
-## status ~ MDVP.Fhi.Hz. + MDVP.Flo.Hz. + Shimmer.APQ5 + Shimmer.DDA + 
-##     HNR + RPDE + spread1 + spread2 + D2
+## Step:  AIC=105.05
+## status ~ MDVP.Flo.Hz. + MDVP.RAP + Shimmer.APQ5 + NHR + HNR + 
+##     RPDE + spread1 + spread2 + D2
 ## 
 ##                Df Deviance    AIC
-## - MDVP.Flo.Hz.  1   89.514 107.51
-## - Shimmer.DDA   1   89.720 107.72
-## - MDVP.Fhi.Hz.  1   91.027 109.03
-## &lt;none&gt;              89.041 109.04
-## - D2            1   91.127 109.13
-## - Shimmer.APQ5  1   91.398 109.40
-## - HNR           1   91.779 109.78
-## - RPDE          1   91.926 109.93
-## - spread2       1   92.546 110.55
-## - spread1       1  105.082 123.08
+## - HNR           1   85.485 103.48
+## - MDVP.Flo.Hz.  1   85.630 103.63
+## - RPDE          1   86.449 104.45
+## &lt;none&gt;              85.052 105.05
+## - MDVP.RAP      1   87.322 105.32
+## - spread2       1   87.342 105.34
+## - D2            1   87.908 105.91
+## - NHR           1   88.179 106.18
+## - Shimmer.APQ5  1   88.207 106.21
+## - spread1       1   94.127 112.13
 ## 
-## Step:  AIC=107.51
-## status ~ MDVP.Fhi.Hz. + Shimmer.APQ5 + Shimmer.DDA + HNR + RPDE + 
+## Step:  AIC=103.49
+## status ~ MDVP.Flo.Hz. + MDVP.RAP + Shimmer.APQ5 + NHR + RPDE + 
 ##     spread1 + spread2 + D2
 ## 
 ##                Df Deviance    AIC
-## - Shimmer.DDA   1   90.147 106.15
-## - MDVP.Fhi.Hz.  1   91.445 107.44
-## &lt;none&gt;              89.514 107.51
-## - D2            1   91.598 107.60
-## - Shimmer.APQ5  1   91.785 107.78
-## - HNR           1   92.063 108.06
-## - RPDE          1   92.200 108.20
-## - spread2       1   93.156 109.16
-## - spread1       1  109.181 125.18
+## - MDVP.Flo.Hz.  1   86.300 102.30
+## &lt;none&gt;              85.485 103.48
+## - MDVP.RAP      1   87.485 103.48
+## - D2            1   88.011 104.01
+## - Shimmer.APQ5  1   88.428 104.43
+## - spread2       1   88.447 104.45
+## - RPDE          1   88.704 104.70
+## - NHR           1   89.732 105.73
+## - spread1       1   94.476 110.48
 ## 
-## Step:  AIC=106.15
-## status ~ MDVP.Fhi.Hz. + Shimmer.APQ5 + HNR + RPDE + spread1 + 
-##     spread2 + D2
-## 
-##                Df Deviance    AIC
-## - MDVP.Fhi.Hz.  1   91.801 105.80
-## &lt;none&gt;              90.147 106.15
-## - D2            1   92.579 106.58
-## - RPDE          1   92.725 106.72
-## - HNR           1   93.227 107.23
-## - spread2       1   93.360 107.36
-## - Shimmer.APQ5  1   95.028 109.03
-## - spread1       1  111.964 125.96
-## 
-## Step:  AIC=105.8
-## status ~ Shimmer.APQ5 + HNR + RPDE + spread1 + spread2 + D2
+## Step:  AIC=102.3
+## status ~ MDVP.RAP + Shimmer.APQ5 + NHR + RPDE + spread1 + spread2 + 
+##     D2
 ## 
 ##                Df Deviance    AIC
-## - D2            1   93.615 105.61
-## &lt;none&gt;              91.801 105.80
-## - RPDE          1   94.865 106.86
-## - spread2       1   95.416 107.42
-## - HNR           1   95.474 107.47
-## - Shimmer.APQ5  1   97.335 109.33
-## - spread1       1  117.023 129.02
+## - MDVP.RAP      1   88.049 102.05
+## &lt;none&gt;              86.300 102.30
+## - D2            1   88.412 102.41
+## - Shimmer.APQ5  1   89.264 103.26
+## - spread2       1   89.368 103.37
+## - RPDE          1   89.412 103.41
+## - NHR           1   89.799 103.80
+## - spread1       1  102.968 116.97
 ## 
-## Step:  AIC=105.62
-## status ~ Shimmer.APQ5 + HNR + RPDE + spread1 + spread2
+## Step:  AIC=102.05
+## status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + spread2 + D2
 ## 
 ##                Df Deviance    AIC
-## &lt;none&gt;              93.615 105.61
-## - HNR           1   95.929 105.93
-## - Shimmer.APQ5  1   99.080 109.08
-## - spread2       1   99.586 109.59
-## - RPDE          1  100.976 110.98
-## - spread1       1  120.415 130.41</code></pre>
+## - D2            1   89.738 101.74
+## - NHR           1   89.817 101.82
+## &lt;none&gt;              88.049 102.05
+## - spread2       1   90.204 102.20
+## - RPDE          1   91.304 103.30
+## - Shimmer.APQ5  1   92.361 104.36
+## - spread1       1  109.896 121.90
+## 
+## Step:  AIC=101.74
+## status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + spread2
+## 
+##                Df Deviance    AIC
+## - NHR           1   90.904 100.90
+## &lt;none&gt;              89.738 101.74
+## - spread2       1   93.697 103.70
+## - Shimmer.APQ5  1   96.209 106.21
+## - RPDE          1   96.382 106.38
+## - spread1       1  113.552 123.55
+## 
+## Step:  AIC=100.9
+## status ~ Shimmer.APQ5 + RPDE + spread1 + spread2
+## 
+##                Df Deviance    AIC
+## &lt;none&gt;              90.904 100.90
+## - spread2       1   94.572 102.57
+## - Shimmer.APQ5  1   96.217 104.22
+## - RPDE          1   98.104 106.10
+## - spread1       1  115.416 123.42</code></pre>
 <pre><code>## 
-## Call:  glm(formula = status ~ Shimmer.APQ5 + HNR + RPDE + spread1 + 
-##     spread2, family = &quot;binomial&quot;, data = train)
+## Call:  glm(formula = status ~ Shimmer.APQ5 + RPDE + spread1 + spread2, 
+##     family = &quot;binomial&quot;, data = train)
 ## 
 ## Coefficients:
-##  (Intercept)  Shimmer.APQ5           HNR          RPDE       spread1  
-##       2.9823        1.9260        0.8514       -0.9075        2.7017  
-##      spread2  
-##       0.8675  
+##  (Intercept)  Shimmer.APQ5          RPDE       spread1       spread2  
+##       2.9792        1.3524       -0.9188        2.8468        0.6879  
 ## 
-## Degrees of Freedom: 155 Total (i.e. Null);  150 Residual
+## Degrees of Freedom: 155 Total (i.e. Null);  151 Residual
 ## Null Deviance:       173.2 
-## Residual Deviance: 93.62     AIC: 105.6</code></pre>
+## Residual Deviance: 90.9  AIC: 100.9</code></pre>
 <p>The Akaike information criterion (AIC) is an estimator of out-of-sample prediction error and thereby relative quality of statistical models for a given set of data.Lower AIC values indicate a better-fit model</p>
-<p>We will select the model with lowest AIC that is status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + spread2</p>
-<pre class="r"><code>final.model= glm(formula = status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + 
-    spread2, family = &quot;binomial&quot;, data = train)
+<p>We will select the model with lowest AIC that is status ~ Shimmer.APQ5 + RPDE + spread1 + spread2</p>
+<pre class="r"><code>final.model=  glm(formula = status ~ Shimmer.APQ5 + RPDE + spread1 + spread2, 
+    family = &quot;binomial&quot;, data = train)
+
 summary(final.model)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + 
-##     spread2, family = &quot;binomial&quot;, data = train)
+## glm(formula = status ~ Shimmer.APQ5 + RPDE + spread1 + spread2, 
+##     family = &quot;binomial&quot;, data = train)
 ## 
 ## Deviance Residuals: 
 ##      Min        1Q    Median        3Q       Max  
-## -2.36619   0.00401   0.17043   0.51684   1.89265  
+## -2.19323   0.00086   0.14142   0.47529   1.71789  
 ## 
 ## Coefficients:
 ##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)    2.6881     0.4877   5.512 3.55e-08 ***
-## Shimmer.APQ5   1.2078     0.7420   1.628  0.10357    
-## NHR           -0.6103     0.7090  -0.861  0.38941    
-## RPDE          -1.0054     0.3486  -2.884  0.00393 ** 
-## spread1        2.4804     0.5960   4.162 3.16e-05 ***
-## spread2        0.9544     0.3723   2.564  0.01036 *  
+## (Intercept)    2.9792     0.5342   5.577 2.44e-08 ***
+## Shimmer.APQ5   1.3524     0.7138   1.895   0.0581 .  
+## RPDE          -0.9188     0.3608  -2.547   0.0109 *  
+## spread1        2.8468     0.6984   4.076 4.58e-05 ***
+## spread2        0.6879     0.3706   1.856   0.0635 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 173.217  on 155  degrees of freedom
-## Residual deviance:  95.116  on 150  degrees of freedom
-## AIC: 107.12
+## Residual deviance:  90.904  on 151  degrees of freedom
+## AIC: 100.9
 ## 
 ## Number of Fisher Scoring iterations: 7</code></pre>
 <p>We will check our model’s accuracy now. First we will use our training data.</p>
@@ -652,30 +660,30 @@ plot(perf,colorize = T,print.cutoffs.at = seq(0.1,by = 0.1))</code></pre>
 ## 
 ##    
 ## pre  0  1
-##   0 32 26
-##   1  6 92
-##                                           
-##                Accuracy : 0.7949          
-##                  95% CI : (0.7229, 0.8553)
-##     No Information Rate : 0.7564          
-##     P-Value [Acc &gt; NIR] : 0.1521771       
-##                                           
-##                   Kappa : 0.5276          
-##                                           
-##  Mcnemar&#39;s Test P-Value : 0.0007829       
-##                                           
-##             Sensitivity : 0.8421          
-##             Specificity : 0.7797          
-##          Pos Pred Value : 0.5517          
-##          Neg Pred Value : 0.9388          
-##              Prevalence : 0.2436          
-##          Detection Rate : 0.2051          
-##    Detection Prevalence : 0.3718          
-##       Balanced Accuracy : 0.8109          
-##                                           
-##        &#39;Positive&#39; Class : 0               
+##   0 32 24
+##   1  6 94
+##                                          
+##                Accuracy : 0.8077         
+##                  95% CI : (0.737, 0.8663)
+##     No Information Rate : 0.7564         
+##     P-Value [Acc &gt; NIR] : 0.078318       
+##                                          
+##                   Kappa : 0.5503         
+##                                          
+##  Mcnemar&#39;s Test P-Value : 0.001911       
+##                                          
+##             Sensitivity : 0.8421         
+##             Specificity : 0.7966         
+##          Pos Pred Value : 0.5714         
+##          Neg Pred Value : 0.9400         
+##              Prevalence : 0.2436         
+##          Detection Rate : 0.2051         
+##    Detection Prevalence : 0.3590         
+##       Balanced Accuracy : 0.8194         
+##                                          
+##        &#39;Positive&#39; Class : 0              
 ## </code></pre>
-<p>Accuracy of training data From confusion matrix of training data, we come to know that our model is 82.40% accurate.</p>
+<p>Accuracy of training data From confusion matrix of training data, we come to know that our model is 81.94% accurate.</p>
 <p>Now validating the model on testing data</p>
 <pre class="r"><code>pre  &lt;- as.numeric(predict(final.model,newdata=test,type=&quot;response&quot;)&gt;0.8)</code></pre>
 <p># type = “response” is used to get the outcome in the form of probability of having parkinson’s disease. As we know that, for training data the cutoff has been 0.8.Similarly the testing data will also have the same threshold or cutoff.</p>
@@ -685,36 +693,36 @@ plot(perf,colorize = T,print.cutoffs.at = seq(0.1,by = 0.1))</code></pre>
 ## 
 ##    
 ## pre  0  1
-##   0  8  6
-##   1  2 23
-##                                          
-##                Accuracy : 0.7949         
-##                  95% CI : (0.6354, 0.907)
-##     No Information Rate : 0.7436         
-##     P-Value [Acc &gt; NIR] : 0.2988         
-##                                          
-##                   Kappa : 0.5244         
-##                                          
-##  Mcnemar&#39;s Test P-Value : 0.2888         
-##                                          
-##             Sensitivity : 0.8000         
-##             Specificity : 0.7931         
-##          Pos Pred Value : 0.5714         
-##          Neg Pred Value : 0.9200         
-##              Prevalence : 0.2564         
-##          Detection Rate : 0.2051         
-##    Detection Prevalence : 0.3590         
-##       Balanced Accuracy : 0.7966         
-##                                          
-##        &#39;Positive&#39; Class : 0              
+##   0  8  5
+##   1  2 24
+##                                           
+##                Accuracy : 0.8205          
+##                  95% CI : (0.6647, 0.9246)
+##     No Information Rate : 0.7436          
+##     P-Value [Acc &gt; NIR] : 0.1808          
+##                                           
+##                   Kappa : 0.5714          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 0.4497          
+##                                           
+##             Sensitivity : 0.8000          
+##             Specificity : 0.8276          
+##          Pos Pred Value : 0.6154          
+##          Neg Pred Value : 0.9231          
+##              Prevalence : 0.2564          
+##          Detection Rate : 0.2051          
+##    Detection Prevalence : 0.3333          
+##       Balanced Accuracy : 0.8138          
+##                                           
+##        &#39;Positive&#39; Class : 0               
 ## </code></pre>
-<p>Balanced Accuracy of Testing data is 79.66%</p>
+<p>Balanced Accuracy of Testing data is 81.38%</p>
 <p>To check how much of our predicted values lie inside the curve</p>
 <pre class="r"><code>auc&lt;-performance(pred,&quot;auc&quot;)
 auc@y.values</code></pre>
 <pre><code>## [[1]]
-## [1] 0.9159233</code></pre>
-<p>We can conclude that we are getting an accuracy of 79.66 %. Also our misclassifcation rate is 20.34%</p>
+## [1] 0.9203836</code></pre>
+<p>We can conclude that we are getting an accuracy of 81.38 %. Also our misclassifcation rate is 18.62%</p>
 
 
 

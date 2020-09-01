@@ -3,7 +3,7 @@
     "path": "D:/work/projects/git/Parkinsons prediction/Parkinsons notebook.Rmd",
     "project_path": "Parkinsons notebook.Rmd",
     "type": "r_markdown",
-    "hash": "2679685171",
+    "hash": "1652216191",
     "contents": "",
     "dirty": false,
     "created": 1598935287536.0,
@@ -11,15 +11,15 @@
     "relative_order": 3,
     "properties": {
         "chunk_output_type": "inline",
-        "cursorPosition": "135,59",
-        "scrollLine": "132"
+        "cursorPosition": "150,99",
+        "scrollLine": "143"
     },
     "folds": "",
-    "lastKnownWriteTime": 1598935453,
+    "lastKnownWriteTime": 1599000638,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1598935453183,
+    "last_content_update": 1599000638607,
     "read_only": false,
     "read_only_alternatives": []
 }
