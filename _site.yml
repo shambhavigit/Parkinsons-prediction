@@ -1,0 +1,6 @@
+name: "Shambhavi Thakur"
+navbar:
+  left:
+    - text: "Parkinsons Disease Prediction"
+      href: Parkinsons-notebook.html
+output_dir: "docs"

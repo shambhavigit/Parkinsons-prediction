@@ -1,0 +1,2 @@
+"0","library(ROCR)"
+"0","pred <-prediction(train$pred,train$status)"

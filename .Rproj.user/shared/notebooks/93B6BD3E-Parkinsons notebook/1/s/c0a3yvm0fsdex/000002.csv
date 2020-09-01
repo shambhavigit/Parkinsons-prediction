@@ -1,0 +1,7 @@
+"0","```r
+```r
+head(data,6)
+dim(data)
+na = colSums(is.na(data))
+```
+```"

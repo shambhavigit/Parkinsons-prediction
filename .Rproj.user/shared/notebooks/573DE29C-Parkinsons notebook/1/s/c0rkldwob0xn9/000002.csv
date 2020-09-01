@@ -1,0 +1,4 @@
+"0","library(caTools)"
+"0","split=sample.split(data$status,SplitRatio = .80)"
+"0","train=subset(data,split==T)"
+"0","test=subset(data,split==F)"

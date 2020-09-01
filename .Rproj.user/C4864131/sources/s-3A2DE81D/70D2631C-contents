@@ -1,6 +1,14 @@
 ---
 title: "R Notebook"
-
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: '1'
+  html_document:
+    toc: yes
+    toc_float: yes
+    collapsed: no
+    number_sections: no
 ---
 
 Parkinson’s disease (PD) is a neurodegenerative disorder that affects predominately dopamine-producing neurons in a specific area of the brain called substantia nigra.
@@ -69,6 +77,35 @@ Removing the highly correlated variables
 ```
 Now we have removed the highly correlated variables from the dataset. 
 
+let’s have a basic idea of each variable respect to the ‘status’ variable. We are going to plot various box-plots for each variable.
+```{r}
+attach(data)
+data.m =melt(data[,-1],id.vars = "status")
+d <- ggplot(data = data.m, aes(x=variable, y=value)) + 
+             geom_boxplot(aes(fill=status))
+d + facet_wrap( ~ variable, scales="free")
+```
+now we have some basic idea how the variables are distributed over ‘status’. Also we are getting an idea of outliers in our variable.
+
+We can see there are good numbers of outliers in “MDVP.RAP”,“Jitter.DDP” and “NHR”. And we will replace them by their median. we will create a function called outlier_replace to do that.
+```{r}
+outlier_remove=function(x){
+    quantiles <- quantile( x, c(.25, .75 ) )
+    iqr=IQR(x)
+    med=median(x)
+    x[ x < quantiles[1]-iqr ] <- med
+    x[ x > quantiles[2]+ iqr] <- med
+    x
+}
+
+```
+replacing the outliers
+```{r}
+data$MDVP.RAP= outlier_remove(data$MDVP.RAP)
+data$Jitter.DDP= outlier_remove(data$Jitter.DDP)
+data$NHR= outlier_remove(data$NHR)
+```
+
 now we age going to split our data into training and test data
 ```{r}
 library(caTools)
@@ -86,13 +123,13 @@ step(model.lg,direction="backward")
  The Akaike information criterion (AIC) is an estimator of out-of-sample prediction error and thereby relative quality of statistical models for a given set of data.Lower AIC values indicate a better-fit model
  
  We will select the model with lowest AIC that is
- status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + 
-    spread2
+ status ~ NHR + RPDE + spread1 + spread2
+
 
  
 ```{r}
-final.model= glm(formula = status ~ Shimmer.APQ5 + NHR + RPDE + spread1 + 
-    spread2, family = "binomial", data = train)
+final.model= glm(formula = status ~ NHR + RPDE + spread1 + spread2, family = "binomial", 
+    data = train)
 summary(final.model)
 ```
 We will check our model’s accuracy now. First we will use our training data.
@@ -103,7 +140,6 @@ train$pred<-fitted(final.model)
 ```
 Predicting the train dataset
 ```{r}
-library(ROCR)
 pred <-prediction(train$pred,train$status)
 ```
  Create Performance Objects and plotting graph
@@ -111,11 +147,11 @@ pred <-prediction(train$pred,train$status)
 perf<-performance(pred,"tpr","fpr")
 plot(perf,colorize = T,print.cutoffs.at = seq(0.1,by = 0.1))
 ```
-With the use of ROC curve we can observe that 0.8 is having better sensitivity and specificity.There we select 0.8 as our cutoff to distinguish.
+With the use of ROC curve we can observe that 0.9 is having better sensitivity and specificity.There we select 0.9 as our cutoff to distinguish.
 
 
 ```{r}
-pre <- as.numeric(predict(final.model,type="response")>0.8)
+pre <- as.numeric(predict(final.model,type="response")>0.9)
 ```
  
 creating the confusion matrix
@@ -124,11 +160,11 @@ confusionMatrix(table(pre,train$status))
 ```
 
 Accuracy of training data
-From confusion matrix of training data, we come to know that our model is 82.40% accurate.
+From confusion matrix of training data, we come to know that our model is 79.57% accurate.
 
 Now validating the model on testing data
 ```{r}
-pre  <- as.numeric(predict(final.model,newdata=test,type="response")>0.8)
+pre  <- as.numeric(predict(final.model,newdata=test,type="response")>0.9)
 
 
 ```
